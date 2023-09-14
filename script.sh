@@ -1,13 +1,33 @@
-#!/bin/sh
+#!/bin/bash
+
+#The script converts LiveCD-iso-to-disk. By running this it will install the kernel and generate the grub.cfg and install the grub on the disk. The disk then can be attached to VM on GCP to prepare for a Disaster Recovery replication. 
+
+# Script requires AWS Region, Disk name and a partition name.
+
+
+echo "Enter the region name: "
+read ap-south-1
+
+echo "Enter the Disk name i.e /dev/sda : "
+read /dev
+
+echo "Enter the Partition name i.e /dev/sda1 : "
+read /dev/shm
+
+if [ -z "$ap-south-1" -o -z "$/dev" -o -z "$/dev/shm" ]; then
+    echo "One or more input is missing, try again..."
+    exit 1
+fi
 
 iso_name="/root/aws-failback-livecd-64bit.iso"
 
+
 echo "Downloading Failback Client ISO"
-wget -O aws-failback-livecd-64bit.iso https://aws-elastic-disaster-recovery-ap-south-1.s3.amazonaws.com/latest/failback_livecd/aws-failback-livecd-64bit.iso
+wget -O aws-failback-livecd-64bit.iso https://aws-elastic-disaster-recovery-$ap-south-1.s3.amazonaws.com/latest/failback_livecd/aws-failback-livecd-64bit.iso
 
 echo "Mounting the Downloaded Failback Client ISO to /mnt"
-mount -v -o loop $iso_name /mnt
-if [ $? -eq 0 ]; then echo "Mounted successfully"; else  echo "$iso_name is not mounted"; exit 1; fi
+mount -v -o loop aws-failback-livecd-64bit.iso /mnt
+if [ $? -eq 0 ]; then echo "Mounted successfully"; else  echo "aws-failback-livecd-64bit.iso is not mounted"; exit 1; fi
 
 mkdir /squashfs /rootfs /secondery_root
 if [ $? -eq 0 ]; then echo "mkdir successfully"; else  echo "mkdir failed"; exit 1; fi
