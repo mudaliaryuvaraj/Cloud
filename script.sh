@@ -1,13 +1,13 @@
 echo "Enter the region name: "
-read ap-south-1
+read region_name
 
 echo "Enter the Disk name i.e /dev/sda : "
-read /dev
+read disk_name
 
 echo "Enter the Partition name i.e /dev/sda1 : "
-read /dev/shm
+read part_name
 
-if [ -z "$ap-south-1" -o -z "$/dev" -o -z "$/dev/shm" ]; then
+if [ -z "$region_name" -o -z "$disk_name" -o -z "$part_name" ]; then
     echo "One or more input is missing, try again..."
     exit 1
 fi
@@ -16,7 +16,7 @@ iso_name="/root/aws-failback-livecd-64bit.iso"
 
 
 echo "Downloading Failback Client ISO"
-wget -O aws-failback-livecd-64bit.iso https://aws-elastic-disaster-recovery-$ap-south-1.s3.amazonaws.com/latest/failback_livecd/aws-failback-livecd-64bit.iso
+wget -O aws-failback-livecd-64bit.iso https://aws-elastic-disaster-recovery-$region_name.s3.amazonaws.com/latest/failback_livecd/aws-failback-livecd-64bit.iso
 
 echo "Mounting the Downloaded Failback Client ISO to /mnt"
 mount -v -o loop $iso_name /mnt
@@ -31,8 +31,8 @@ mount /squashfs/LiveOS/rootfs.img /rootfs
 if [ $? -eq 0 ]; then echo "rootfs.img mounted successfully"; else  echo "rootfs.img  not mounted"; exit 1; fi
 
 echo "mounting the filesystem"
-mount $/dev/shm /secondery_root
-if [ $? -eq 0 ]; then echo "$/dev/shm mounted successfully"; else  echo "$/dev/shm not mounted"; exit 1; fi
+mount $part_name /secondery_root
+if [ $? -eq 0 ]; then echo "$part_name mounted successfully"; else  echo "$part_name not mounted"; exit 1; fi
 
 echo "Downloading the kernel"
 yumdownloader kernel-4.14.268-205.500.amzn2.x86_64 || { echo "yumdownloader failed"; exit 1; }
@@ -52,4 +52,4 @@ echo "generating grub2.cfg"
 chroot /secondery_root/ grub2-mkconfig -o /boot/grub2/grub.cfg || { echo "grub2.cfg creation inside chroot failed"; exit 1; }
 
 echo "installing grub"
-chroot /secondery_root/ grub2-install $/dev || { echo "grub install inside chroot failed"; exit 1; }
+chroot /secondery_root/ grub2-install $disk_name || { echo "grub install inside chroot failed"; exit 1; }
