@@ -1,6 +1,3 @@
-iso_name="/root/aws-failback-livecd-64bit.iso"
-
-
 echo "Downloading Failback Client ISO"
 wget -O aws-failback-livecd-64bit.iso https://aws-elastic-disaster-recovery-ap-south-1.s3.amazonaws.com/latest/failback_livecd/aws-failback-livecd-64bit.iso
 
