@@ -1,10 +1,3 @@
-#!/bin/bash
-
-#The script converts LiveCD-iso-to-disk. By running this it will install the kernel and generate the grub.cfg and install the grub on the disk. The disk then can be attached to VM on GCP to prepare for a Disaster Recovery replication. 
-
-# Script requires AWS Region, Disk name and a partition name.
-
-
 echo "Enter the region name: "
 read ap-south-1
 
