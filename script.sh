@@ -1,3 +1,5 @@
+#!/bin/sh
+
 iso_name="/root/aws-failback-livecd-64bit.iso"
 
 echo "Downloading Failback Client ISO"
